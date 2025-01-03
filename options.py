@@ -2,14 +2,14 @@ import argparse
 
 parser = argparse.ArgumentParser(description='DINOv2 with prompt learning')
 
-parser.add_argument('--exp_name', type=str, default='LN_prompt')
+parser.add_argument('--exp_name', type=str, default='dino_promptl')
 
 # ----------------------
 # Training Params
 # ----------------------
 
-parser.add_argument('--clip_lr', type=float, default=1e-4)
-parser.add_argument('--clip_LN_lr', type=float, default=1e-6)
+parser.add_argument('--dino_lr', type=float, default=1e-4)
+parser.add_argument('--dino_LN_lr', type=float, default=1e-6)
 parser.add_argument('--prompt_lr', type=float, default=1e-4)
 parser.add_argument('--linear_lr', type=float, default=1e-4)
 parser.add_argument('--batch_size', type=int, default=32)

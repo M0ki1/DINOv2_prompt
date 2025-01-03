@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import pytorch_lightning as pl
 
 from src.dinov2.models.vision_transformer import vit_base
@@ -21,27 +20,19 @@ class Model(pl.LightningModule):
         super().__init__()
 
         self.opts = opts
-
         self.dino = vit_base(patch_size=14, block_chunks=0, init_values=1.0) 
-        self.dino.load_state_dict(torch.load('./dinov2_vitb14_pretrain.pth', map_location=self.device))
         self.dino.apply(freeze_all_but_bn)
 
         # Prompt Learning
         self.sk_prompt = nn.Parameter(torch.randn(self.opts.n_prompts, self.opts.prompt_dim))
         self.img_prompt = nn.Parameter(torch.randn(self.opts.n_prompts, self.opts.prompt_dim))
 
-        self.distance_fn = lambda x, y: 1.0 - F.cosine_similarity(x, y)
-        self.loss_fn_triplet = nn.TripletMarginWithDistanceLoss(
-             distance_function=self.distance_fn, margin=0.2)
-
-        self.best_metric = -1e3
-
     def configure_optimizers(self):
         model_params = list(self.dino.parameters())
 
         optimizer = torch.optim.Adam([
-            {'params': model_params, 'lr': self.opts.clip_LN_lr},
-            {'params': [self.sk_prompt] + [self.img_prompt], 'lr': self.opts.prompt_lr}])
+            {'params': model_params, 'lr': self.opts.clip_LN_lr}
+        ])
         return optimizer
     
 
