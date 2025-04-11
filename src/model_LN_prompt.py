@@ -3,8 +3,12 @@ import torch.nn as nn
 import pytorch_lightning as pl
 
 from src.dinov2.models.vision_transformer import vit_base
-from options import opts
+class Opts:
+    prompt_dim = 768
+    n_prompts = 3
+    clip_LN_lr = 1e-4
 
+opts = Opts()
 def freeze_model(m):
     m.requires_grad_(False)
 
